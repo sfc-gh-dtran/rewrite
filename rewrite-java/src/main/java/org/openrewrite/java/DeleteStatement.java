@@ -130,6 +130,13 @@ public class DeleteStatement<P> extends JavaIsoVisitor<P> {
     }
 
     @Override
+    public J.Case visitCase(J.Case _case, P p) {
+        J.Case c = super.visitCase(_case, p);
+        return c.withStatements(ListUtils.map(c.getStatements(), s ->
+                statement.isScope(s) ? null : s));
+    }
+
+    @Override
     public J preVisit(J tree, P p) {
         if (statement.isScope(tree)) {
             for (JavaType.FullyQualified referenced : FindReferencedTypes.find(tree)) {
